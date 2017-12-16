@@ -1,0 +1,88 @@
+<script src="https://cdn.netpie.io/microgear.js"></script>
+
+<script>
+
+  const APPID = "SmatKey";
+  const KEY = "cOsZmDUh5VuqMTC";
+  const SECRET = "bTEdDcmLlaCRZVoukE2tg5jeH";
+
+  const ALIAS = "web";     //  ชื่อตัวเอง
+  const thing1 = "esp8266";   //  ชื่อเพื่อนที่จะคุย
+
+  function switchPress(logic){
+    if(logic == 1 ){
+      microgear.chat(thing1,"ON");
+    }else if(logic == 0 ){
+      microgear.chat(thing1,"OFF");
+    }
+  }
+
+  var microgear = Microgear.create({
+    key: KEY,
+    secret: SECRET,
+    alias : ALIAS
+  });
+
+
+  microgear.on('message', function(topic,data) {
+    if(data=="ON"){
+      document.getElementById("Status").innerHTML = "LOCK";
+    }else if(data=="OFF"){
+      document.getElementById("Status").innerHTML = "UNLOCK";
+    }
+  });
+
+  microgear.on('connected', function() {
+    microgear.setAlias(ALIAS);
+    document.getElementById("connected_NETPIE").innerHTML = "System is online."
+  });
+
+  microgear.on('present', function(event) {
+    console.log(event);
+  });
+
+  microgear.on('absent', function(event) {
+    console.log(event);
+  });
+
+  microgear.resettoken(function(err) {
+    microgear.connect(APPID);
+  });
+
+</script>
+
+<html lang="en">
+<link href= "css/css.css" type= "text/css" rel="stylesheet" />
+
+<head>
+	<meta charset="utf-8" />
+	<title>Table Style</title>
+	<meta name="viewport" content="initial-scale=1.0; maximum-scale=1.0; width=device-width;">
+</head>
+
+<body>
+<div class="table-title">
+<h3>Smart Key for Smart Home</h3>
+<p id="connected_NETPIE"></p>
+</div>
+<table class="table-fill">
+<thead>
+<tr>
+<th class="text-left">ROOM</th>
+<th class="text-left">Command</th>
+<th class="text-left">Status</th>
+</tr>
+</thead>
+<tbody class="table-hover">
+<tr>
+<td class="text-center"><strong>Kitchen</strong></td>
+<td class="text-center">
+<button type="button" onclick="switchPress(1)">LOCK</button>
+<button type="button" onclick="switchPress(0)">UNLOCK</button>
+</td>
+<h3><td class="text-center" id="Status">UNLOCK</td></h3>
+</tr>
+
+</tbody>
+</table>
+</body>
