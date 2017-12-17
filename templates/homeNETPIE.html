@@ -52,7 +52,7 @@
 </script>
 
 <html lang="en">
-<link href= "css/css.css" type= "text/css" rel="stylesheet" />
+<link href= "static/css.css" type= "text/css" rel="stylesheet" />
 
 <head>
 	<meta charset="utf-8" />
@@ -63,7 +63,8 @@
 <body>
 <div class="table-title">
 <h3>Smart Key for Smart Home</h3>
-<p id="connected_NETPIE"></p>
+<p id="connected_NETPIE"></p><p>Current User: {{ user.username }}</p>
+<p><a href='/logout'>Logout</a></p>
 </div>
 <table class="table-fill">
 <thead>

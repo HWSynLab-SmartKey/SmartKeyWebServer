@@ -2,15 +2,31 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Sign-up</title>
+    <title>Sign up</title>
 </head>
 <body>
-    <h1>Sign-up</h1>
-    <form method="POST" action="/signup">
+  <link href= "static/csslogin.css" type= "text/css" rel="stylesheet" />
+
+  <div class="login-page">
+    <div class="form">
+      <form class="login-form" method="POST" action="/signup">
+        <!-- <input type="text" name="username" placeholder="username"/>
+        <input type="password" name="password" placeholder="password"/> -->
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+              <p class="message">{{ messages[-1] }}</p>
+          {% endif %}
+        {% endwith %}
         {{ form.hidden_tag() }}
         {{ form.username.label }} {{ form.username(size=20) }}
         {{ form.password.label }} {{ form.password(size=20) }}
-        <input type="submit" value="Signup">
-    </form>
+        <button type="submit">Sign Up</button>
+        <!-- <input onclick="window.location.href='/signup'" value="REGISTER"> -->
+        <!-- <input type="submit" name="Login" value="" onclick='location.replace("www.thaicreate.com")'> -->
+        <!-- <input type="submit" name="Submit2" value="" onclick='location.replace("www.thaicreate.com")'> -->
+        <p class="message">Already registered? <a href="/login">Login</a></p>
+      </form>
+    </div>
+  </div>
 </body>
 </html>

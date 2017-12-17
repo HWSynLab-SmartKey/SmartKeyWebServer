@@ -8,16 +8,14 @@
 
   <div class="login-page">
     <div class="form">
-      <form class="register-form">
-        <input type="text" placeholder="name"/>
-        <input type="password" placeholder="password"/>
-        <input type="text" placeholder="email address"/>
-        <button>create</button>
-        <p class="message">Already registered? <a href="#">Sign In</a></p>
-      </form>
       <form class="login-form" method="POST" action="/login">
         <!-- <input type="text" name="username" placeholder="username"/>
         <input type="password" name="password" placeholder="password"/> -->
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+              <p class="message">{{ messages[-1] }}</p>
+          {% endif %}
+        {% endwith %}
         {{ form.hidden_tag() }}
         {{ form.username.label }} {{ form.username(size=20) }}
         {{ form.password.label }} {{ form.password(size=20) }}

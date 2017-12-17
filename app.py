@@ -1,7 +1,8 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, flash
 from forms import SignupForm
-from flask_login import LoginManager, login_user, login_required, logout_user
+from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from flask_sqlalchemy import SQLAlchemy
+from passlib.hash import pbkdf2_sha256
 
 # initialize app and create db object
 
@@ -37,20 +38,35 @@ def login():
     form = SignupForm()
 
     if(request.method == 'GET'):
-        return render_template('login.html', form=form)
+        if(current_user.is_authenticated):
+            return redirect('/panel')
+        else:
+            return render_template('login.html', form=form)
     elif(request.method == 'POST'):
         if(form.validate_on_submit()):
             user = User.query.filter_by(username=form.username.data).first()
             if(user):
-                if(user.password == form.password.data):
+                auth = False
+                try:
+                    auth = pbkdf2_sha256.verify(form.password.data, user.password)
+                except Exception as e:
+                    flash('Incorrect Password')
+                    return redirect('/login')
+                if(auth):
                     login_user(user)
-                    return 'User logged in'
+                    return redirect('/panel')
                 else:
-                    return 'Incorrect Password'
+                    flash('Incorrect Password')
+                    logout_user()
+                    return redirect('/login')
             else:
-                return 'User does not exist'
+                flash('User does not exist')
+                logout_user()
+                return redirect('/login')
         else:
-            return 'form did not validate'
+            flash('Incorrect information')
+            logout_user()
+            redirect('/login')
 
 @app.route('/signup', methods=['GET', 'POST'])
 def register():
@@ -61,13 +77,15 @@ def register():
     elif(request.method == 'POST'):
         if form.validate_on_submit():
             if(User.query.filter_by(username=form.username.data).first()):
-                return 'Username already exists'
+                flash('Username already exists')
+                return redirect('/signup')
             else:
-                user = User(form.username.data, form.password.data)
+                password_hash = pbkdf2_sha256.hash(form.password.data)
+                user = User(form.username.data, password_hash)
                 db.session.add(user)
                 db.session.commit()
                 login_user(user)
-                return 'User created'
+                return redirect('/panel')
         else:
             return 'form did not validate'
 
@@ -75,12 +93,18 @@ def register():
 @login_required
 def logout():
     logout_user()
-    return 'User logged out'
+    flash('Logged out successfully')
+    return redirect('/login')
 
 @app.route('/panel')
 @login_required
 def panel():
-    return 'Protected'
+    return render_template('homeNETPIE.html', user=current_user)
+
+@login_manager.unauthorized_handler
+def unauthorized():
+    flash('Please login first.')
+    return redirect('/login')
 
 if(__name__ == '__main__'):
     app.run(host='0.0.0.0', debug=True)
