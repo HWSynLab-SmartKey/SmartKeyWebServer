@@ -9,12 +9,14 @@
   const ALIAS = "web";     //  ชื่อตัวเอง
   const thing1 = "esp8266";   //  ชื่อเพื่อนที่จะคุย
 
-  function switchPress(logic){
-    if(logic == 1 ){
-      microgear.chat(thing1,"ON");
-    }else if(logic == 0 ){
-      microgear.chat(thing1,"OFF");
-    }
+  function switchPress(logic, door){
+    console.log("Updated: " + door+logic);
+    // if(logic == "1" ){
+    //   microgear.chat(thing1,"ON");
+    // }else if(logic == "0" ){
+    //   microgear.chat(thing1,"OFF");
+    // }
+    microgear.chat(thing1, door+logic);
   }
 
   var microgear = Microgear.create({
@@ -25,10 +27,19 @@
 
 
   microgear.on('message', function(topic,data) {
-    if(data=="ON"){
-      document.getElementById("Status").innerHTML = "LOCK";
-    }else if(data=="OFF"){
-      document.getElementById("Status").innerHTML = "UNLOCK";
+    // if(data=="ON"){
+    //   document.getElementById("Status").innerHTML = "LOCK";
+    // }else if(data=="OFF"){
+    //   document.getElementById("Status").innerHTML = "UNLOCK";
+    // }
+    //set id of 3 door statuses to "status1", "status2" and "status3"
+    for(var i = 0; i < 3; i++){
+     if(current_data[i]=="1"){
+       document.getElementById("status"+i+1).innerHTML = "LOCK";
+     }
+    else{
+       document.getElementById("status"+i+1).innerHTML = "UNLOCK";
+     }
     }
   });
 
@@ -61,29 +72,34 @@
 </head>
 
 <body>
-<div class="table-title">
-<h3>Smart Key for Smart Home</h3>
-<p id="connected_NETPIE"></p><p>Current User: {{ user.username }}</p>
-<p><a href='/logout'>Logout</a></p>
-</div>
-<table class="table-fill">
-<thead>
-<tr>
-<th class="text-left">ROOM</th>
-<th class="text-left">Command</th>
-<th class="text-left">Status</th>
-</tr>
-</thead>
-<tbody class="table-hover">
-<tr>
-<td class="text-center"><strong>Kitchen</strong></td>
-<td class="text-center">
-<button type="button" onclick="switchPress(1)">LOCK</button>
-<button type="button" onclick="switchPress(0)">UNLOCK</button>
-</td>
-<h3><td class="text-center" id="Status">UNLOCK</td></h3>
-</tr>
 
-</tbody>
-</table>
+  <div class="table-title">
+    <h3>Smart Key for Smart Home</h3>
+    <p id="connected_NETPIE"></p><p>Current User: {{ user.username }}</p>
+    <!-- <p><a href='/logout'>Logout</a></p> -->
+    <button type="button" onclick="window.location.href('/logout')">Logout</button>
+  </div>
+
+  <table class="table-fill">
+
+    <thead>
+      <tr>
+        <th class="text-left">ROOM</th>
+        <th class="text-left">Command</th>
+        <th class="text-left">Status</th>
+      </tr>
+    </thead>
+    {% for i in range(1,4) %}
+    <tbody class="table-hover">
+      <tr>
+        <td class="text-center"><strong>Room {{i}}</strong></td>
+        <td class="text-center">
+          <button type="button" onclick="switchPress('1',{{i}})">LOCK</button>
+          <button type="button" onclick="switchPress('0',{{i}})">UNLOCK</button>
+        </td>
+        <h3><td class="text-center" id="status{{i}}">UNLOCK</td></h3>
+      </tr>
+    </tbody>
+    {% endfor %}
+  </table>
 </body>
