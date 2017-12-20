@@ -66,13 +66,15 @@ def login():
         else:
             flash('Incorrect information')
             logout_user()
-            redirect('/login')
+            return redirect('/login')
 
 @app.route('/signup', methods=['GET', 'POST'])
 def register():
     form = SignupForm()
 
     if(request.method == 'GET'):
+        if(current_user.is_authenticated):
+            return redirect('/panel')
         return render_template('signup.html', form=form)
     elif(request.method == 'POST'):
         if form.validate_on_submit():
@@ -87,7 +89,9 @@ def register():
                 login_user(user)
                 return redirect('/panel')
         else:
-            return 'form did not validate'
+            flash('Incorrect information')
+            logout_user()
+            return redirect('/login')
 
 @app.route('/logout')
 @login_required
@@ -99,7 +103,12 @@ def logout():
 @app.route('/panel')
 @login_required
 def panel():
-    return render_template('homeNETPIE.html', user=current_user)
+    user_permission = dict()
+    user_permission[1] = ['aa', 'bb']
+    user_permission[2] = ['aa']
+    user_permission[3] = ['bb']
+    return render_template('homeNETPIE.html', user=current_user,\
+    user_permission=user_permission)
 
 @login_manager.unauthorized_handler
 def unauthorized():

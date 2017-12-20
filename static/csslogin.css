@@ -52,6 +52,11 @@
   color: #3e94ec;
   text-decoration: none;
 }
+.form h1 {
+  margin: 15px 0 0;
+  color: #000000;
+  font-size: 26px;
+}
 .form .register-form {
   display: none;
 }
