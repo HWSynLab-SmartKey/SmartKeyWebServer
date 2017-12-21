@@ -64,10 +64,12 @@
   });
 
   microgear.on('present', function(event) {
+    // document.getElementByID("connected_node").innerHTML = "NodeMCU Status: Online";
     console.log(event);
   });
 
   microgear.on('absent', function(event) {
+    // document.getElementByID("connected_node").innerHTML = "NodeMCU Status: Offline";
     console.log(event);
   });
 
@@ -89,6 +91,7 @@
   <div class="table-title">
     <h3>Smart Key for Smart Home</h3>
     <p id="connected_NETPIE"></p><p>Current User: {{ user.username }}</p>
+    {# <p id="connected_node">NodeMCU Status: OFFLINE</p>#}
     <!-- <p><a href='/logout'>Logout</a></p> -->
     <button type="button" onclick="window.location.href='/logout'">Logout</button>
   </div>
