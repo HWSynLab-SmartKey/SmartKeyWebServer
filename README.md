@@ -17,4 +17,20 @@
 - Go to http://localhost:5000
 - ถ้าต้องลงอะไรเพิ่ม พอลงเสร็จแล้วให้เรียกคำสั่ง `pip freeze > requirements.txt` ด้วย
 
+## Running/ Updating
+
+_Windows_
+
+- `.\env\Scripts\activate`
+- `Get-Command pip` -> `<project folder>\Scripts\pip.exe`
+- `pip install -r requirements.txt`
+- `python app.py runserver`
+
+_Linux/Unix-based OS_
+
+- `source env/bin/activate`
+- `which pip` -> `env/bin/pip`
+- `pip install -r requirements.txt`
+- `python app.py runserver`
+
 Reference: https://medium.com/@perwagnernielsen/getting-started-with-flask-login-can-be-a-bit-daunting-in-this-tutorial-i-will-use-d68791e9b5b5
